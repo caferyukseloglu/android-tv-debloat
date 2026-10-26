@@ -35,6 +35,11 @@ A package not in a list is never touched. Pull requests for other brands are wel
 python3 -m unittest test_debloat
 ```
 
+## See also
+
+[android-tv-home](https://github.com/caferyukseloglu/android-tv-home): a calm, tvOS-style home screen
+with Philips Hue lights built in, made on the same TV.
+
 ## License
 
 MIT
