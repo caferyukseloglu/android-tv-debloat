@@ -1,0 +1,19 @@
+{
+  "about": "Packages found on many Android TV / Google TV builds. Absent from this list = never touched.",
+  "packages": [
+    {"id": "android.autoinstalls.config.tcl.device", "tier": "safe", "what": "Play Auto Installs: pushes partner apps back after setup"},
+    {"id": "com.google.android.feedback", "tier": "safe", "what": "Google feedback/crash reporter"},
+    {"id": "com.google.android.play.games", "tier": "safe", "what": "Google Play Games"},
+    {"id": "com.google.android.videos", "tier": "safe", "what": "Google TV / Play Movies app"},
+    {"id": "com.google.android.marvin.talkback", "tier": "safe", "what": "TalkBack screen reader (keep if you use accessibility)"},
+    {"id": "com.android.camera2", "tier": "safe", "what": "Camera app; a TV has no camera"},
+    {"id": "com.android.messaging", "tier": "safe", "what": "SMS app; a TV has no SIM"},
+    {"id": "com.android.printspooler", "tier": "safe", "what": "Print service"},
+    {"id": "org.chromium.webview_shell", "tier": "safe", "what": "WebView test shell"},
+    {"id": "com.google.android.apps.nbu.smartconnect.tv", "tier": "safe", "what": "Smart Connect: phone-assisted setup, stays resident"},
+    {"id": "com.google.android.tvrecommendations", "tier": "optional", "what": "Home screen recommendation rows"},
+    {"id": "com.google.android.youtube.tvmusic", "tier": "optional", "what": "YouTube Music"},
+    {"id": "com.google.android.backdrop", "tier": "optional", "what": "Ambient mode screensaver (photos/art)"},
+    {"id": "com.amazon.amazonvideo.livingroom", "tier": "optional", "what": "Prime Video"}
+  ]
+}
