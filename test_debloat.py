@@ -80,6 +80,45 @@ class Restore(unittest.TestCase):
         self.assertEqual(self.calls, ["settings delete secure a", "settings put secure b 'pkg/.Foo$Dream'"])
 
 
+class Check(unittest.TestCase):
+    """Fake TV after a firmware update: b came back on, a stayed off, gone was removed."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.calls = []
+        patches = [
+            mock.patch.object(debloat, "BACKUPS", pathlib.Path(self.tmp.name)),
+            mock.patch.object(debloat, "serial", lambda: "tv1"),
+            mock.patch.object(debloat, "sh", self.fake_sh),
+        ]
+        for p in patches:
+            p.start()
+            self.addCleanup(p.stop)
+        self.addCleanup(self.tmp.cleanup)
+        for name, packages in [("tv1-20260101-100000.json", ["a", "b", "gone"]),
+                               ("tv1-20260101-090000.json.restored", ["c"]),  # undone on purpose
+                               ("tv2-20260101-100000.json", ["c"])]:  # another TV
+            (pathlib.Path(self.tmp.name) / name).write_text(json.dumps({"packages": packages, "settings": {}}))
+
+    def fake_sh(self, cmd):
+        self.calls.append(cmd)
+        if cmd == "pm list packages -d":
+            return "package:a"
+        if cmd == "pm list packages":
+            return "package:a\npackage:b\npackage:c"
+        return f"Package {cmd.split()[-1]} new state: disabled-user"
+
+    def test_reports_what_came_back_and_exits_nonzero(self):
+        with self.assertRaises(SystemExit) as done:
+            debloat.cmd_check(mock.Mock(fix=False))
+        self.assertIn("1 package", str(done.exception))
+        self.assertFalse([c for c in self.calls if c.startswith("pm disable-user")])
+
+    def test_fix_turns_only_those_off_again(self):
+        debloat.cmd_check(mock.Mock(fix=True))
+        self.assertEqual([c for c in self.calls if c.startswith("pm disable-user")], ["pm disable-user --user 0 b"])
+
+
 class Lists(unittest.TestCase):
     def test_lists_are_valid(self):
         for path in pathlib.Path(debloat.LISTS).glob("*.json"):

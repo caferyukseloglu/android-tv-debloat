@@ -212,6 +212,23 @@ def cmd_restore(args):
         print(f"Restored {path.name}\n")
 
 
+def cmd_check(args):
+    """After a firmware update: what this TV's applies turned off that is on again. Exits 1 then, for cron."""
+    applied = {pkg for path in this_tv_backups() for pkg in json.loads(path.read_text())["packages"]}
+    back = sorted(applied & (parse_packages(sh("pm list packages")) - parse_packages(sh("pm list packages -d"))))
+    if not back:
+        print("Nothing came back.")
+        return
+    for pkg in back:
+        if args.fix:
+            out = sh(f"pm disable-user --user 0 {pkg}")
+            print(f"  {'ok  ' if 'disabled-user' in out else 'FAIL'} {pkg}")
+        else:
+            print(f"  on again  {pkg}")
+    if not args.fix:
+        sys.exit(f"\n{len(back)} package(s) came back. `debloat.py check --fix` turns them off again.")
+
+
 def this_tv_backups():
     files = sorted(BACKUPS.glob(f"{serial()}-*.json"), reverse=True)
     if not files:
@@ -232,9 +249,11 @@ def main():
     a.add_argument("--yes", action="store_true", help="really apply")
     r = sub.add_parser("restore", help="undo every apply on this TV (or just the given backup file)")
     r.add_argument("backup", nargs="?")
+    c = sub.add_parser("check", help="after a firmware update: list what came back on (exit 1), or --fix it")
+    c.add_argument("--fix", action="store_true", help="turn them off again")
     args = p.parse_args()
     connect(args.device)
-    {"scan": cmd_scan, "apply": cmd_apply, "restore": cmd_restore}[args.cmd](args)
+    {"scan": cmd_scan, "apply": cmd_apply, "restore": cmd_restore, "check": cmd_check}[args.cmd](args)
 
 
 if __name__ == "__main__":

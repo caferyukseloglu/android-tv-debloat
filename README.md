@@ -1,5 +1,7 @@
 # android-tv-debloat
 
+English · [Türkçe](README.tr.md)
+
 Debloat an Android TV over the network. One Python file, no dependencies besides `adb`.
 Nothing is deleted: packages are disabled for the user, every change is backed up first, and `restore` undoes it.
 
@@ -18,10 +20,17 @@ python3 debloat.py apply                         # dry run of the safe tier
 python3 debloat.py apply --yes                   # do it (backup written to backups/)
 python3 debloat.py apply --also com.tcl.gallery --yes   # safe tier plus chosen optional packages
 python3 debloat.py restore                       # undo every apply on this TV
+python3 debloat.py check                         # after a firmware update: what came back on
+python3 debloat.py check --fix                   # turn those off again
 ```
 
 `scan` shows each listed package, whether it is off, on, or running and how much RAM it holds.
 `apply` also sets UI animations to 0.5x (`--no-tweaks` to skip).
+
+A firmware update often turns disabled packages back on. `check` compares the TV with what your applies
+turned off and exits 1 when something came back, so it fits a weekly cron job; `check --fix` turns those
+packages off again. The update may also hand Home back to the stock launcher: with
+[android-tv-home](https://github.com/caferyukseloglu/android-tv-home), run `./home.sh home` again.
 
 ## Lists
 
