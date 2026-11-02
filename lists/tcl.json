@@ -37,7 +37,6 @@
     {"id": "com.tcl.ui_mediaCenter", "tier": "optional", "what": "USB media player"},
     {"id": "com.tcl.miracast", "tier": "optional", "what": "Screen mirroring (Miracast)"},
     {"id": "com.tcl.MultiScreenInteraction_TV", "tier": "optional", "what": "T-Cast phone remote / casting"},
-    {"id": "com.tcl.guard", "tier": "optional", "what": "TCL TV Manager (cleaner/security)"},
     {"id": "com.tcl.browser", "tier": "optional", "what": "TCL browser"},
     {"id": "com.tcl.versionUpdateApp", "tier": "optional", "what": "TCL system updates (disabling stops OTA)"}
   ]
